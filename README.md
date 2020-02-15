@@ -46,6 +46,13 @@ Every time the textbox value changes, we'll update a counter in the app-db, then
 
 We'll use an event called `:update-text-edits`, which will track the number of total changes to the textbox.
 
+Steps:
+
+- Implement an event, `:update-text-edits`.
+- Make a place for the data in the `app-db` in `db.cljs`
+- Implement a sub, `:total-text-edits`
+- Subscribe to the sub and show the data in the view
+
 In some cases, using events like this for something that changes at a high frequency could result in big performance issues, particularly on mobile.
 
 For more information, looking at Reagent (the React templating library used under the hood) and form-3 components is useful.
