@@ -46,9 +46,56 @@ Every time the textbox value changes, we'll update a counter in the app-db, then
 
 In some cases, using events like this for something that changes at a high frequency could result in big performance issues, particularly on mobile.
 
-For more information, looking at Reagent (the React templating libary used under the hood) and form-3 components is useful.
+For more information, looking at Reagent (the React templating library used under the hood) and form-3 components is useful.
 
-You can also debounce effects.
+You can also debounce effects. This would be achieved by something like:
+
+```clj
+(ns todomvc.debounce
+  (:require [re-frame.core :refer [reg-fx dispatch]]
+            [schema.core :as s]))
+
+(defn now [] (.getTime (js/Date.)))
+
+(def registered-keys (atom nil))
+
+(def DebouncedEventSchema
+  {:key s/Keyword
+   :event [s/Any]
+   :delay s/Num})
+
+(defn dispatch-if-not-superceded [{:keys [key delay event time-received]}]
+  (when (= time-received (get @registered-keys key))
+    ;; no new events on this key!
+    (dispatch event)))
+
+(defn dispatch-later [{:keys [delay] :as debounce}]
+  (js/setTimeout
+   (fn [] (dispatch-if-not-superceded debounce))
+   delay))
+
+(reg-fx
+ :dispatch-debounce
+ (fn dispatch-debounce [debounce]
+   (try
+     (s/validate DebouncedEventSchema debounce)
+     (catch js/Object e
+       (error e)))
+   (let [ts (now)]
+     (swap! registered-keys assoc (:key debounce) ts)
+     (dispatch-later (assoc debounce :time-received ts)))))
+```
+
+You could then use it like so:
+
+```clj
+(reg-event-fx
+ :debounced-update-text-edits
+ (fn [fx [_ text]]
+   {:dispatch-debounce {:key :update-text-edits
+                        :event [:update-text-edits text]
+                        :delay 250}}))
+```
 
 ## REPLs and `s/emacs/$yr-editor/i`
 
