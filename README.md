@@ -44,6 +44,8 @@ Okay, this is a somewhat contrived feature, but we're going to add a character c
 
 Every time the textbox value changes, we'll update a counter in the app-db, then reveal that value on screen.
 
+We'll use an event called `:update-text-edits`, which will track the number of total changes to the textbox.
+
 In some cases, using events like this for something that changes at a high frequency could result in big performance issues, particularly on mobile.
 
 For more information, looking at Reagent (the React templating library used under the hood) and form-3 components is useful.
@@ -53,7 +55,7 @@ You can also debounce effects. This would be achieved by something like:
 ```clj
 (ns todomvc.debounce
   (:require [re-frame.core :refer [reg-fx dispatch]]
-            [schema.core :as s]))
+            [schema.core :as s])) ;; this ns uses schema to validate inputs etc
 
 (defn now [] (.getTime (js/Date.)))
 
@@ -74,6 +76,7 @@ You can also debounce effects. This would be achieved by something like:
    (fn [] (dispatch-if-not-superceded debounce))
    delay))
 
+;; works in a similar fashion to the lodash debounce fn
 (reg-fx
  :dispatch-debounce
  (fn dispatch-debounce [debounce]
@@ -89,11 +92,12 @@ You can also debounce effects. This would be achieved by something like:
 You could then use it like so:
 
 ```clj
+;; now you call this event instead of the original one
 (reg-event-fx
  :debounced-update-text-edits
  (fn [fx [_ text]]
-   {:dispatch-debounce {:key :update-text-edits
-                        :event [:update-text-edits text]
+   {:dispatch-debounce {:key :update-text-edits ;; unique key
+                        :event [:update-text-edits text] ;; the original event
                         :delay 250}}))
 ```
 
