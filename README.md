@@ -1,8 +1,10 @@
 # Re-Frame workshop
 
+NB: This repo is available at the short URL `https://tinyurl.com/ll-feb-20-workshop`
+
 The goal of this workshop is to better understand how re-frame event flows work, and how to build and debug re-frame apps.
 
-The basics of the framework are simple, and scale pretty well, so we'll be 
+The basics of the framework are simple, and scale pretty well, so we'll be going over the basics of the entire re-frame event flow.
 
 ## Getting started
 
