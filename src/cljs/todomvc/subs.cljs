@@ -12,10 +12,7 @@
 ;; Why?  It is an efficiency thing. Every Layer 2 subscription will rerun any time
 ;; that `app-db` changes (in any way). As a result, we want Layer 2 to be trivial.
 ;;
-(reg-sub
-  :showing          ;; usage:   (subscribe [:showing])
-  (fn [db _]        ;; db is the (map) value stored in the app-db atom
-    (:showing db))) ;; extract a value from the application state
+
 
 
 ;; Next, the registration of a similar handler is done in two steps.
