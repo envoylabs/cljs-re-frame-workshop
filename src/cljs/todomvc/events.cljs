@@ -122,15 +122,7 @@
 ;; usage:  (dispatch [:set-showing  :active])
 ;; This event is dispatched when the user clicks on one of the 3
 ;; filter buttons at the bottom of the display.
-(reg-event-db      ;; part of the re-frame API
-  :set-showing     ;; event-id
 
-  ;; only one interceptor
-  [check-spec-interceptor]       ;; after event handler runs, check app-db for correctness. Does it still match Spec?
-
-  ;; handler
-  (fn [db [_ new-filter-kw]]     ;; new-filter-kw is one of :all, :active or :done
-    (assoc db :showing new-filter-kw)))
 
 ;; NOTE: below is a rewrite of the event handler (above) using a `path` Interceptor
 ;; You'll find it illuminating to compare this rewrite with the original.
