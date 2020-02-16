@@ -40,6 +40,8 @@ You'll notice that the `:showing` sub no longer works. It's referenced in the vi
 (subscribe [:showing])
 ```
 
+`subscribe` takes as its argument a vector, where the first item is a unique keyword that references the sub, then any additional arguments.
+
 The sub is relatively simple - it's just extracting the value of the top-level `:showing` key from the db.
 
 We're going to implement it on line 15.
@@ -47,7 +49,7 @@ We're going to implement it on line 15.
 ```clj
 (reg-sub
   :showing
-  (fn [db _]
+  (fn [db _] ;; <-- additional arguments would go in a vector in the _ position
     (:showing db)))
 ```
 
@@ -56,6 +58,35 @@ We're going to implement it on line 15.
 For the next task, we're going to check out the `workshop-task-2` branch. Again, you'll find things are broken. Again, we're coming to the rescue!
 
 Open `events.cljs` in `src/cljs/todomvc` and let's have a look.
+
+Again you'll see lots of docs. You might also notice after looking that there's no `:set-showing` event in the namespace.
+
+This is the way that it's dispatched in the view. `dispatch` takes a vector, that like for a subscription, takes a unique keyword as its first item, followed by any other arguments. 
+
+```clj
+(dispatch [:set-showing  :active])
+```
+
+We're going to implement the missing `:set-showing` event.
+
+Note that the vector passed to `dispatch` is symmetrical with that in the matching `reg-event-db`.
+
+```clj
+(reg-event-db
+  :set-showing
+  (fn [db [_ new-filter-kw]]
+    (assoc db :showing new-filter-kw)))
+```
+
+Also, there is an interceptor that checks the spec of the input. Interceptors are passed as a vector of functions.
+
+```clj
+(reg-event-db
+  :set-showing
+  [check-spec-interceptor]
+  (fn [db [_ new-filter-kw]]
+    (assoc db :showing new-filter-kw)))
+```
 
 ## Task 3 - New feature
 
