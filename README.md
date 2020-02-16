@@ -32,6 +32,25 @@ In order to get started, check out the `workshop-task-1` branch. You'll find tha
 
 Open `subs.cljs` in `src/cljs/todomvc` and let's have a look.
 
+You'll see lots of documentation - that's because this is a canonical re-frame example and is used as living docs in the main re-frame repo.
+
+You'll notice that the `:showing` sub no longer works. It's referenced in the view code with:
+
+```clj
+(subscribe [:showing])
+```
+
+The sub is relatively simple - it's just extracting the value of the top-level `:showing` key from the db.
+
+We're going to implement it on line 15.
+
+```clj
+(reg-sub
+  :showing
+  (fn [db _]
+    (:showing db)))
+```
+
 ## Task 2 - Fix events
 
 For the next task, we're going to check out the `workshop-task-2` branch. Again, you'll find things are broken. Again, we're coming to the rescue!
