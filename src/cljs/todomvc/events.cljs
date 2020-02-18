@@ -92,6 +92,12 @@
 
 ;; -- Event Handlers ----------------------------------------------------------
 
+(reg-event-db
+ :increment-text-edit-count
+ [check-spec-interceptor]
+ (fn [db _]
+   (update-in db [:text-edits-count] inc)))
+
 ;; usage:  (dispatch [:initialise-db])
 ;;
 ;; This event is dispatched in the app's `main` (core.cljs).

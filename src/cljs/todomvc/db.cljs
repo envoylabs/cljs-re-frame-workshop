@@ -19,6 +19,7 @@
 ;; None of this is strictly necessary. It could be omitted. But we find it
 ;; good practice.
 
+(s/def ::text-edits-count int?)
 (s/def ::id int?)
 (s/def ::title string?)
 (s/def ::done boolean?)
@@ -45,7 +46,8 @@
 
 (def default-db           ;; what gets put into app-db by default.
   {:todos   (sorted-map)  ;; an empty list of todos. Use the (int) :id as the key
-   :showing :all})        ;; show all todos
+   :showing :all          ;; show all todos
+   :text-edits-count 0})        
 
 
 ;; -- Local Storage  ----------------------------------------------------------

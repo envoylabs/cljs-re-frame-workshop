@@ -17,7 +17,9 @@
                       :value       @val
                       :auto-focus  true
                       :on-blur     save
-                      :on-change   #(reset! val (-> % .-target .-value))
+                      :on-change   #(do
+                                      (reset! val (-> % .-target .-value))
+                                      (dispatch [:increment-text-edit-count]))
                       :on-key-down #(case (.-which %)
                                       13 (save)
                                       27 (stop)
@@ -70,13 +72,15 @@
 (defn footer-controls
   []
   (let [[active done] @(subscribe [:footer-counts])
+        total-edits   @(subscribe [:text-edits-count])
         showing       @(subscribe [:showing])
         a-fn          (fn [filter-kw txt]
                         [:a {:class (when (= filter-kw showing) "selected")
                              :href (str "#/" (name filter-kw))} txt])]
     [:footer#footer
      [:span#todo-count
-      [:strong active] " " (case active 1 "item" "items") " left"]
+      [:strong active] " " (case active 1 "item" "items") " left // "
+      [:em total-edits " total edits"]]
      [:ul#filters
       [:li (a-fn :all    "All")]
       [:li (a-fn :active "Active")]

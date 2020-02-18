@@ -17,6 +17,10 @@
   (fn [db _]        ;; db is the (map) value stored in the app-db atom
     (:showing db))) ;; extract a value from the application state
 
+(reg-sub
+ :text-edits-count
+ (fn [db _]
+   (:text-edits-count db)))
 
 ;; Next, the registration of a similar handler is done in two steps.
 ;; First, we `defn` a pure handler function.  Then, we use `reg-sub` to register it.
